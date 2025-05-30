@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de E-mail Temporário</title>
+    <style>
+        body { font-family: Arial, text-align: center; padding: 20px; }
+        button { background: #0088cc; color: white; border: none; padding: 10px; border-radius: 5px; }
+        #email { font-weight: bold; color: #0088cc; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>📧 Gerador de E-mail Temporário</h1>
+    <button onclick="generateEmail()">Gerar E-mail</button>
+    <div id="email">---</div>
+    <div id="inbox"></div>
 
+    <script>
+        async function generateEmail() {
+            const response = await fetch("https://api.tempmail.lol/v1/gen");
+            const data = await response.json();
+            document.getElementById('email').textContent = data.email;
+            checkInbox(data.email);
+        }
+
+        async function checkInbox(email) {
+            const inbox = document.getElementById('inbox');
+            inbox.innerHTML = "Carregando mensagens...";
+            
+            const response = await fetch(`https://api.tempmail.lol/v1/inbox?email=${email}`);
+            const messages = await response.json();
+            
+            if (messages.length > 0) {
+                inbox.innerHTML = `<p>📨 <strong>Última mensagem:</strong> ${messages[0].subject}</p>`;
+            } else {
+                inbox.innerHTML = "<p>Nenhuma mensagem recebida.</p>";
+            }
+        }
+    </script>
+
+    <!-- Monetag (Substitua SEU_ID_DA_MONETAG) -->
+    <script>
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.monetag.com/script.js';
+            script.setAttribute('data-publisher-id', 'SEU_ID_DA_MONETAG');
+            document.body.appendChild(script);
+        })();
+    </script>
+</body>
+</html>
